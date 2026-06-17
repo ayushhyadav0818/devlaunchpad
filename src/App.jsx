@@ -75,8 +75,13 @@ export default function App() {
     setCommentText("");
   };
 
-  // Extract all unique tags
-  const allTags = ["All", ...new Set(projects.flatMap(p => p.tags))];
+  // Get counts for sidebar tags
+  const getCategoryCount = (tag) => {
+    if (tag === "All") return projects.length;
+    return projects.filter(p => p.tags.includes(tag)).length;
+  };
+
+  const availableTags = ["All", "AI", "SaaS", "Developer Tools", "Productivity", "Database"];
 
   // Filtering projects
   const filteredProjects = projects.filter(p => {
@@ -88,7 +93,7 @@ export default function App() {
   });
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#0A0A0B", color: "#e5e2e3" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#131314", color: "#e5e2e3" }}>
       {/* Top Navbar */}
       <nav style={{
         position: "sticky", top: 0, width: "100%", zIndex: 50,
@@ -100,180 +105,131 @@ export default function App() {
           height: "64px", padding: "0 24px", maxWidth: "1280px", margin: "0 auto"
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
-            <a href="#" style={{
-              fontSize: "24px", fontWeight: "800", textDecoration: "none",
-              color: "#c0c1ff", textShadow: "0 0 15px rgba(99,102,241,0.4)"
-            }}>
+            <a href="#" style={{ fontSize: "22px", fontWeight: "800", textDecoration: "none", color: "#c0c1ff" }}>
               Launchpad
             </a>
-            <div style={{ display: "flex", gap: "24px" }} className="hidden-mobile">
+            <div style={{ display: "flex", gap: "24px" }}>
               <a href="#" style={{ color: "#c0c1ff", fontWeight: "700", borderBottom: "2px solid #c0c1ff", paddingBottom: "4px", textDecoration: "none" }}>Explore</a>
-              <a href="#" onClick={() => setShowLaunchModal(true)} style={{ color: "#c7c4d7", textDecoration: "none", transition: "color 0.2s" }}>Submit</a>
+              <a href="#" onClick={() => setShowLaunchModal(true)} style={{ color: "#c7c4d7", textDecoration: "none" }}>Submit</a>
             </div>
           </div>
+          
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <div style={{ position: "relative" }}>
               <input 
                 type="text" 
-                placeholder="Search..."
+                placeholder="Search projects..."
+                className="cyber-input"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  background: "#000", border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: "8px", padding: "8px 12px 8px 32px", color: "#e5e2e3",
-                  fontSize: "14px", outline: "none", transition: "all 0.2s"
-                }}
+                style={{ paddingLeft: "36px", width: "240px", fontSize: "14px" }}
               />
-              <span style={{ position: "absolute", left: "10px", top: "10px", color: "#c7c4d7", fontSize: "14px" }}>🔍</span>
+              <span style={{ position: "absolute", left: "12px", top: "10px", color: "#c7c4d7", fontSize: "14px" }}>🔍</span>
             </div>
             <button 
               className="btn-primary" 
               onClick={() => setShowLaunchModal(true)}
-              style={{ padding: "8px 16px", fontSize: "14px" }}
+              style={{ padding: "8px 20px", fontSize: "13px" }}
             >
-              Submit Project
+              Sign In
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <main style={{ position: "relative", paddingTop: "80px", paddingBottom: "120px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "450px", overflow: "hidden" }}>
-        <div className="grid-bg" style={{ position: "absolute", inset: 0, pointerEvents: "none" }}></div>
-        <div style={{
-          position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
-          width: "600px", height: "600px", background: "rgba(192, 193, 255, 0.08)",
-          borderRadius: "50%", filter: "blur(100px)", pointerEvents: "none"
-        }}></div>
-
-        <div style={{ relative: "z-10", maxWidth: "1280px", margin: "0 auto", padding: "0 24px", textAlign: "center" }}>
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: "8px",
-            padding: "4px 12px", borderRadius: "999px", background: "rgba(76, 215, 246, 0.1)",
-            border: "1px solid rgba(76, 215, 246, 0.2)", color: "#4cd7f6",
-            marginBottom: "32px", fontFamily: "Geist", fontSize: "12px", fontWeight: "600", textTransform: "uppercase"
-          }}>
-            <span style={{ display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", background: "#4cd7f6" }}></span>
-            System Operational
-          </div>
-
-          <h1 className="glow-text" style={{ fontSize: "52px", fontWeight: "800", color: "#fff", marginBottom: "24px", lineHeight: "1.15", letterSpacing: "-0.03em" }}>
-            Launch into the Synthetic Era. <br/>
-            <span style={{ color: "#c0c1ff" }}>Discover, upvote, and scale.</span>
-          </h1>
-
-          <p style={{ color: "#c7c4d7", maxWidth: "650px", margin: "0 auto 40px auto", fontSize: "18px", lineHeight: "1.6" }}>
-            The premier destination for the next generation of Micro-SaaS. Connect with visionary founders, deep-tech investors, and early adopters in a high-density, high-velocity ecosystem.
-          </p>
-
-          <div style={{ display: "flex", gap: "16px", justifyContent: "center" }}>
-            <button 
-              className="btn-primary" 
-              onClick={() => {
-                const element = document.getElementById("explore-section");
-                element?.scrollIntoView({ behavior: "smooth" });
-              }}
-              style={{ padding: "14px 32px", fontSize: "16px" }}
-            >
-              Start Exploring
-            </button>
-            <button 
-              className="glass-modal" 
-              onClick={() => setShowLaunchModal(true)}
-              style={{ padding: "14px 32px", fontSize: "16px", color: "#c0c1ff", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.08)", cursor: "pointer" }}
-            >
-              Submit Project
-            </button>
-          </div>
-        </div>
-      </main>
-
-      {/* Explore Section */}
-      <section id="explore-section" style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 24px", width: "100%" }}>
-        {/* Filter tags header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "16px" }}>
-          <h2 style={{ fontSize: "24px", fontWeight: "700", color: "#fff" }}>Trending Launches</h2>
-          
-          <div style={{ display: "flex", gap: "8px" }}>
-            {allTags.map(tag => (
-              <button
+      {/* Main Layout Body */}
+      <div style={{ flex: 1, display: "flex", width: "100%", maxWidth: "1280px", margin: "0 auto", overflow: "hidden" }}>
+        
+        {/* Sidebar Nav */}
+        <aside style={{ width: "240px", borderRight: "1px solid rgba(255, 255, 255, 0.08)", padding: "24px", display: "flex", flexDirection: "column" }}>
+          <h2 style={{ fontSize: "12px", fontWeight: "600", color: "#c7c4d7", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px" }}>Categories</h2>
+          <nav style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {availableTags.map(tag => (
+              <a 
+                href="#" 
                 key={tag}
                 onClick={() => setSelectedTag(tag)}
                 style={{
-                  background: selectedTag === tag ? "#c0c1ff" : "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  color: selectedTag === tag ? "#1000a9" : "#e5e2e3",
-                  padding: "6px 14px",
-                  borderRadius: "20px",
-                  cursor: "pointer",
-                  fontSize: "13px",
-                  fontWeight: "600",
+                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  padding: "8px 12px", borderRadius: "8px", textDecoration: "none",
+                  background: selectedTag === tag ? "rgba(255,255,255,0.05)" : "transparent",
+                  border: selectedTag === tag ? "1px solid rgba(192,193,255,0.3)" : "1px solid transparent",
+                  color: selectedTag === tag ? "#c0c1ff" : "#c7c4d7",
                   transition: "all 0.2s"
                 }}
               >
-                {tag}
-              </button>
+                <span>{tag === "All" ? "All Projects" : tag}</span>
+                <span style={{ fontSize: "12px", opacity: 0.8 }}>{getCategoryCount(tag)}</span>
+              </a>
             ))}
-          </div>
-        </div>
+          </nav>
+        </aside>
 
-        {/* Content grid */}
-        {filteredProjects.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "80px 0", color: "#c7c4d7" }}>
-            <h3>No products found under this category</h3>
+        {/* Feed Area */}
+        <main style={{ flex: 1, padding: "24px", minWidth: 0 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "32px" }}>
+            <div>
+              <h1 style={{ fontSize: "28px", fontWeight: "800", color: "#fff", margin: "0 0 4px 0" }}>Discovery Feed</h1>
+              <p style={{ color: "#c7c4d7", fontSize: "14px", margin: 0 }}>Discover the latest Micro-SaaS tools built by indie hackers.</p>
+            </div>
+            <div style={{ display: "flex", background: "#201f20", borderRadius: "8px", padding: "4px", border: "1px solid rgba(255,255,255,0.05)" }}>
+              <button className="btn-primary" style={{ padding: "6px 16px", borderRadius: "6px", fontSize: "12px" }}>Newest</button>
+              <button style={{ padding: "6px 16px", background: "none", border: "none", color: "#c7c4d7", cursor: "pointer", fontSize: "12px" }}>Trending</button>
+            </div>
           </div>
-        ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))", gap: "24px" }}>
+
+          {/* Cards Grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "24px" }}>
             {filteredProjects.map(proj => (
-              <div 
+              <article 
                 key={proj.id} 
-                className="glass-panel" 
+                className="surface-level-1 interactive-glow"
                 onClick={() => setActiveProject(proj)}
-                style={{ padding: "20px", cursor: "pointer", display: "flex", flexDirection: "column", height: "360px", justifyContent: "space-between" }}
+                style={{ padding: "20px", borderRadius: "12px", display: "flex", flexDirection: "column", height: "240px", cursor: "pointer", justifyContent: "space-between" }}
               >
                 <div>
-                  <div style={{ width: "100%", height: "160px", borderRadius: "6px", background: "#1c1b1c", overflow: "hidden", position: "relative", marginBottom: "16px" }}>
-                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom right, rgba(192, 193, 255, 0.2), rgba(76, 215, 246, 0.1))", opacity: 0.5 }}></div>
-                    <img 
-                      src={proj.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=350"} 
-                      alt={proj.name} 
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                    />
-                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div style={{ display: "flex", itemsCenter: "center", gap: "12px" }}>
+                      <div style={{ width: "40px", height: "40px", borderRadius: "8px", background: "linear-gradient(135deg, #6366f1, #06B6D4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
+                        🚀
+                      </div>
+                      <div>
+                        <h3 style={{ margin: 0, fontSize: "17px", fontWeight: "700", color: "#fff" }}>{proj.name}</h3>
+                        <span style={{ fontSize: "10px", background: "rgba(6,182,212,0.15)", color: "#06B6D4", padding: "2px 6px", borderRadius: "4px" }}>
+                          {proj.tags[0]}
+                        </span>
+                      </div>
+                    </div>
 
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
-                    <h3 style={{ margin: 0, fontSize: "20px", fontWeight: "700", color: "#fff" }}>{proj.name}</h3>
+                    {/* Upvote */}
                     <div 
                       onClick={(e) => handleVote(proj.id, e)}
                       style={{
-                        background: proj.hasVoted ? "rgba(192, 193, 255, 0.25)" : "rgba(255,255,255,0.03)",
-                        border: "1px solid rgba(192, 193, 255, 0.3)",
-                        color: "#c0c1ff", borderRadius: "4px", padding: "4px 8px",
-                        display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", fontWeight: "700"
+                        display: "flex", flexDirection: "column", alignItems: "center",
+                        background: proj.hasVoted ? "rgba(192, 193, 255, 0.15)" : "#201f20",
+                        border: proj.hasVoted ? "1px solid #c0c1ff" : "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: "8px", padding: "6px 10px", cursor: "pointer"
                       }}
                     >
-                      <span>▲</span>
-                      <span>{proj.upvotes}</span>
+                      <span style={{ fontSize: "11px", color: "#c0c1ff" }}>▲</span>
+                      <span style={{ fontSize: "13px", fontWeight: "700", color: "#fff" }}>{proj.upvotes}</span>
                     </div>
                   </div>
-                  <p style={{ color: "#c7c4d7", fontSize: "14px", margin: "0 0 12px 0", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+
+                  <p style={{ color: "#c7c4d7", fontSize: "14px", marginTop: "16px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                     {proj.tagline}
                   </p>
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div style={{ display: "flex", gap: "6px" }}>
-                    {proj.tags.map(t => (
-                      <span key={t} className="tag-badge">{t}</span>
-                    ))}
-                  </div>
-                  <span style={{ color: "#4cd7f6", fontSize: "13px", fontWeight: "600" }}>View Project →</span>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "12px" }}>
+                  <span style={{ fontSize: "12px", color: "#c7c4d7" }}>by @{proj.creatorGithub}</span>
+                  <span style={{ fontSize: "12px", color: "#06B6D4", fontWeight: "600" }}>$2.4k/mo</span>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
-        )}
-      </section>
+        </main>
+      </div>
 
       {/* Project Details Modal */}
       {activeProject && (
@@ -283,11 +239,11 @@ export default function App() {
           display: "flex", justifyContent: "center", alignItems: "center", zIndex: 100
         }} onClick={() => setActiveProject(null)}>
           <div 
-            className="glass-panel glass-modal" 
+            className="surface-level-1 surface-level-2" 
             onClick={(e) => e.stopPropagation()}
             style={{
-              width: "680px", maxHeight: "90vh", overflowY: "auto",
-              padding: "40px", position: "relative", background: "#131314"
+              width: "650px", maxHeight: "90vh", overflowY: "auto",
+              padding: "40px", position: "relative", borderRadius: "12px"
             }}
           >
             {/* Close */}
@@ -300,8 +256,8 @@ export default function App() {
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
               <div>
-                <h2 style={{ fontSize: "32px", fontWeight: "800", color: "#fff", margin: "0 0 6px 0" }}>{activeProject.name}</h2>
-                <p style={{ color: "#4cd7f6", fontSize: "15px", margin: 0, fontFamily: "Geist" }}>{activeProject.tagline}</p>
+                <h2 style={{ fontSize: "28px", fontWeight: "800", color: "#fff", margin: "0 0 6px 0" }}>{activeProject.name}</h2>
+                <p style={{ color: "#06B6D4", fontSize: "14px", margin: 0, fontFamily: "Geist" }}>{activeProject.tagline}</p>
               </div>
               <button 
                 onClick={(e) => handleVote(activeProject.id, e)}
@@ -317,7 +273,7 @@ export default function App() {
               </button>
             </div>
 
-            <p style={{ color: "#c7c4d7", fontSize: "16px", lineHeight: "1.6", marginBottom: "28px" }}>
+            <p style={{ color: "#c7c4d7", fontSize: "15px", lineHeight: "1.6", marginBottom: "28px" }}>
               {activeProject.description}
             </p>
 
@@ -325,7 +281,7 @@ export default function App() {
             <div style={{ display: "flex", gap: "12px", marginBottom: "36px" }}>
               <a href={activeProject.github} target="_blank" rel="noreferrer" style={{ textDecoration: "none", flex: 1 }}>
                 <button style={{ width: "100%", padding: "12px", borderRadius: "8px", background: "#1c1b1c", border: "1px solid rgba(255,255,255,0.08)", color: "white", cursor: "pointer", fontWeight: "600" }}>
-                  💻 GitHub Source Code
+                  💻 GitHub Source
                 </button>
               </a>
               {activeProject.website && (
@@ -339,33 +295,33 @@ export default function App() {
                 onClick={() => setShowAnalyticsModal(true)}
                 style={{ padding: "12px 16px", borderRadius: "8px", background: "rgba(76, 215, 246, 0.1)", border: "1px solid rgba(76, 215, 246, 0.3)", color: "#4cd7f6", cursor: "pointer", fontWeight: "600" }}
               >
-                📈 Live Stats
+                📊 Insights Stats
               </button>
             </div>
 
             {/* Discussion Section */}
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "24px" }}>
-              <h3 style={{ margin: "0 0 16px 0", fontSize: "18px", color: "#fff" }}>Discussion Board</h3>
+              <h3 style={{ margin: "0 0 16px 0", fontSize: "18px", color: "#fff" }}>Discussions</h3>
               
-              <form onSubmit={handleAddComment} style={{ display: "flex", gap: "10px", marginBottom: "24px" }}>
+              <form onSubmit={handleAddComment} style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
                 <input 
                   type="text" 
-                  placeholder="Leave detailed feedback or ask questions..."
+                  placeholder="Ask a question or leave feedback..."
                   style={{
-                    flex: 1, background: "#0e0e0f", border: "1px solid rgba(255, 255, 255, 0.08)",
+                    flex: 1, background: "#000", border: "1px solid rgba(255, 255, 255, 0.08)",
                     borderRadius: "8px", color: "white", padding: "10px 14px", outline: "none"
                   }}
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
                 />
                 <button type="submit" className="btn-primary" style={{ padding: "0 20px", borderRadius: "8px" }}>
-                  Post Comment
+                  Comment
                 </button>
               </form>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 {activeProject.comments.map(c => (
-                  <div key={c.id} style={{ background: "rgba(255,255,255,0.01)", border: "1px solid rgba(255,255,255,0.04)", padding: "14px 18px", borderRadius: "8px" }}>
+                  <div key={c.id} style={{ background: "rgba(255,255,255,0.01)", border: "1px solid rgba(255,255,255,0.04)", padding: "12px 16px", borderRadius: "8px" }}>
                     <div style={{ fontWeight: "600", fontSize: "13px", color: "#c0c1ff", marginBottom: "4px" }}>@{c.user}</div>
                     <div style={{ fontSize: "14px", color: "#c7c4d7" }}>{c.text}</div>
                   </div>
@@ -384,9 +340,9 @@ export default function App() {
           display: "flex", justifyContent: "center", alignItems: "center", zIndex: 110
         }} onClick={() => setShowAnalyticsModal(false)}>
           <div 
-            className="glass-panel glass-modal" 
+            className="surface-level-1 surface-level-2" 
             onClick={(e) => e.stopPropagation()}
-            style={{ width: "520px", padding: "30px", background: "#131314", position: "relative" }}
+            style={{ width: "500px", padding: "30px", borderRadius: "12px", position: "relative" }}
           >
             <button 
               onClick={() => setShowAnalyticsModal(false)}
@@ -394,26 +350,26 @@ export default function App() {
             >
               ✕
             </button>
-            <h3 style={{ margin: "0 0 4px 0", fontSize: "20px", color: "#fff" }}>{activeProject.name} Performance</h3>
-            <p style={{ color: "#c7c4d7", fontSize: "13px", margin: "0 0 24px 0" }}>Developer dashboard visitor analytics</p>
+            <h3 style={{ margin: "0 0 4px 0", fontSize: "20px", color: "#fff" }}>{activeProject.name} Insights</h3>
+            <p style={{ color: "#c7c4d7", fontSize: "13px", margin: "0 0 20px 0" }}>Metrics tracked over last 7 days</p>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "24px" }}>
               <div style={{ background: "rgba(255,255,255,0.01)", padding: "16px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)" }}>
-                <div style={{ color: "#c7c4d7", fontSize: "12px" }}>Unique Pageviews</div>
-                <div style={{ fontSize: "26px", fontWeight: "700", color: "#4cd7f6" }}>{activeProject.analytics.views}</div>
+                <div style={{ color: "#c7c4d7", fontSize: "12px" }}>Total Views</div>
+                <div style={{ fontSize: "24px", fontWeight: "700", color: "#06B6D4" }}>{activeProject.analytics.views}</div>
               </div>
               <div style={{ background: "rgba(255,255,255,0.01)", padding: "16px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)" }}>
-                <div style={{ color: "#c7c4d7", fontSize: "12px" }}>Conversion Upvotes</div>
-                <div style={{ fontSize: "26px", fontWeight: "700", color: "#c0c1ff" }}>
+                <div style={{ color: "#c7c4d7", fontSize: "12px" }}>Upvote Conversion</div>
+                <div style={{ fontSize: "24px", fontWeight: "700", color: "#c0c1ff" }}>
                   {Math.round((activeProject.upvotes / activeProject.analytics.views) * 100)}%
                 </div>
               </div>
             </div>
 
             {/* Sparkline Graph (SVG) */}
-            <h4 style={{ margin: "0 0 12px 0", fontSize: "14px", color: "#c7c4d7" }}>Luminescent Growth Velocity</h4>
-            <div style={{ background: "rgba(255,255,255,0.01)", padding: "20px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.04)" }}>
-              <svg viewBox="0 0 300 100" style={{ width: "100%", height: "90px", overflow: "visible" }}>
+            <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#c7c4d7" }}>Luminescent Growth Velocity</h4>
+            <div style={{ background: "rgba(255,255,255,0.01)", padding: "16px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.04)" }}>
+              <svg viewBox="0 0 300 100" style={{ width: "100%", height: "80px", overflow: "visible" }}>
                 <path
                   d={`M 10 ${100 - activeProject.analytics.dailyUpvotes[0] * 2} 
                      L 50 ${100 - activeProject.analytics.dailyUpvotes[1] * 2} 
@@ -423,38 +379,21 @@ export default function App() {
                      L 210 ${100 - activeProject.analytics.dailyUpvotes[5] * 2} 
                      L 290 ${100 - activeProject.analytics.dailyUpvotes[6] * 2}`}
                   fill="none"
-                  stroke="#4cd7f6"
+                  stroke="#6366f1"
                   strokeWidth="3"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                />
-                {/* Neon glow effect */}
-                <path
-                  d={`M 10 ${100 - activeProject.analytics.dailyUpvotes[0] * 2} 
-                     L 50 ${100 - activeProject.analytics.dailyUpvotes[1] * 2} 
-                     L 90 ${100 - activeProject.analytics.dailyUpvotes[2] * 2} 
-                     L 130 ${100 - activeProject.analytics.dailyUpvotes[3] * 2} 
-                     L 170 ${100 - activeProject.analytics.dailyUpvotes[4] * 2} 
-                     L 210 ${100 - activeProject.analytics.dailyUpvotes[5] * 2} 
-                     L 290 ${100 - activeProject.analytics.dailyUpvotes[6] * 2}`}
-                  fill="none"
-                  stroke="#4cd7f6"
-                  strokeWidth="8"
-                  opacity="0.3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  style={{ filter: "blur(4px)" }}
                 />
                 {/* Dots */}
                 {activeProject.analytics.dailyUpvotes.map((val, idx) => {
                   const x = idx === 6 ? 290 : 10 + idx * 40;
                   const y = 100 - val * 2;
                   return (
-                    <circle key={idx} cx={x} cy={y} r="5" fill="#c0c1ff" />
+                    <circle key={idx} cx={x} cy={y} r="4" fill="#06B6D4" />
                   );
                 })}
               </svg>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "#c7c4d7", marginTop: "12px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#c7c4d7", marginTop: "8px" }}>
                 <span>Day 1</span>
                 <span>Day 4</span>
                 <span>Today</span>
@@ -473,12 +412,12 @@ export default function App() {
         }} onClick={() => setShowLaunchModal(false)}>
           <form 
             onSubmit={handleLaunch}
-            className="glass-panel glass-modal" 
+            className="surface-level-1 surface-level-2" 
             onClick={(e) => e.stopPropagation()}
             style={{
-              width: "560px", maxHeight: "90vh", overflowY: "auto",
-              padding: "40px", position: "relative", background: "#131314",
-              display: "flex", flexDirection: "column", gap: "18px"
+              width: "550px", maxHeight: "90vh", overflowY: "auto",
+              padding: "40px", position: "relative",
+              display: "flex", flexDirection: "column", gap: "16px", borderRadius: "12px"
             }}
           >
             <button 
@@ -489,50 +428,50 @@ export default function App() {
               ✕
             </button>
             <h2 style={{ fontSize: "24px", fontWeight: "800", color: "#fff", margin: 0 }}>Launch your Startup</h2>
-            <p style={{ color: "#c7c4d7", fontSize: "13px", margin: "0 0 10px 0" }}>Publish your product in front of active developers and investors.</p>
+            <p style={{ color: "#c7c4d7", fontSize: "13px", margin: "0 0 10px 0" }}>Share your product with hundreds of active developers.</p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
               <label style={{ fontSize: "13px", fontWeight: "600", color: "#c7c4d7" }}>Startup Name *</label>
               <input 
                 type="text" 
-                placeholder="e.g. NexusGraph"
+                placeholder="e.g. CodeForge"
                 required
-                style={{ background: "#0e0e0f", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
               />
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <label style={{ fontSize: "13px", fontWeight: "600", color: "#c7c4d7" }}>Tagline *</label>
+              <label style={{ fontSize: "13px", fontWeight: "600", color: "#c7c4d7" }}>Short Tagline *</label>
               <input 
                 type="text" 
-                placeholder="e.g. Neural-net powered knowledge graph engine"
+                placeholder="e.g. Build API integrations in under 5 minutes"
                 required
-                style={{ background: "#0e0e0f", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
                 value={newTagline}
                 onChange={(e) => setNewTagline(e.target.value)}
               />
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <label style={{ fontSize: "13px", fontWeight: "600", color: "#c7c4d7" }}>Detailed Description *</label>
+              <label style={{ fontSize: "13px", fontWeight: "600", color: "#c7c4d7" }}>Deep-dive Description *</label>
               <textarea 
-                placeholder="Details of your Micro-SaaS. Key features, roadmap..."
+                placeholder="What problem does it solve? Who is it for?"
                 required
                 rows={4}
-                style={{ background: "#0e0e0f", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px", resize: "none", fontFamily: "inherit" }}
+                style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px", resize: "none", fontFamily: "inherit" }}
                 value={newDesc}
                 onChange={(e) => setNewDesc(e.target.value)}
               />
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <label style={{ fontSize: "13px", fontWeight: "600", color: "#c7c4d7" }}>Tags (comma separated)</label>
+              <label style={{ fontSize: "13px", fontWeight: "600", color: "#c7c4d7" }}>Category Tags (comma separated)</label>
               <input 
                 type="text" 
-                placeholder="e.g. AI, Database, Developer Tools"
-                style={{ background: "#0e0e0f", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                placeholder="e.g. AI, SaaS, Developer Tools"
+                style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
                 value={newTagsString}
                 onChange={(e) => setNewTagsString(e.target.value)}
               />
@@ -540,28 +479,28 @@ export default function App() {
 
             <div style={{ display: "flex", gap: "12px" }}>
               <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: 1 }}>
-                <label style={{ fontSize: "13px", fontWeight: "600", color: "#c7c4d7" }}>GitHub URL</label>
+                <label style={{ fontSize: "13px", fontWeight: "600", color: "#c7c4d7" }}>GitHub Repo Link</label>
                 <input 
                   type="url" 
                   placeholder="https://github.com/..."
-                  style={{ background: "#0e0e0f", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                  style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
                   value={newGithub}
                   onChange={(e) => setNewGithub(e.target.value)}
                 />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: 1 }}>
-                <label style={{ fontSize: "13px", fontWeight: "600", color: "#c7c4d7" }}>Live Site URL</label>
+                <label style={{ fontSize: "13px", fontWeight: "600", color: "#c7c4d7" }}>Live URL</label>
                 <input 
                   type="url" 
                   placeholder="https://..."
-                  style={{ background: "#0e0e0f", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                  style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
                   value={newWebsite}
                   onChange={(e) => setNewWebsite(e.target.value)}
                 />
               </div>
             </div>
 
-            <button type="submit" className="btn-primary" style={{ padding: "14px", fontSize: "15px", marginTop: "12px" }}>
+            <button type="submit" className="btn-primary" style={{ padding: "14px", borderRadius: "8px", cursor: "pointer", marginTop: "10px" }}>
               Submit Startup To Feed 🚀
             </button>
           </form>
@@ -571,18 +510,19 @@ export default function App() {
       {/* Footer */}
       <footer style={{
         marginTop: "auto", borderTop: "1px solid rgba(255,255,255,0.08)",
-        background: "#0e0e0f", padding: "48px 24px"
+        background: "#0E0E0F", padding: "24px"
       }}>
         <div style={{
           display: "flex", justifyContent: "space-between", alignItems: "center",
-          maxWidth: "1280px", margin: "0 auto", flexWrap: "wrap", gap: "24px"
+          maxWidth: "1280px", margin: "0 auto"
         }}>
           <div>
-            <h4 style={{ fontSize: "18px", fontWeight: "800", color: "#fff", margin: "0 0 6px 0" }}>Launchpad</h4>
-            <p style={{ color: "#c7c4d7", fontSize: "13px", margin: 0 }}>Building the synthetic future.</p>
+            <h4 style={{ fontSize: "16px", fontWeight: "800", color: "#fff", margin: "0 0 4px 0" }}>Launchpad</h4>
+            <p style={{ color: "#c7c4d7", fontSize: "12px", margin: 0 }}>© 2026 Launchpad Micro-SaaS. All rights reserved.</p>
           </div>
-          <div style={{ fontSize: "12px", color: "#c7c4d7", opacity: 0.8 }}>
-            © 2026 Launchpad Micro-SaaS. All rights reserved.
+          <div style={{ display: "flex", gap: "16px" }}>
+            <a href="#" style={{ color: "#c7c4d7", fontSize: "12px", textDecoration: "none" }}>Terms</a>
+            <a href="#" style={{ color: "#c7c4d7", fontSize: "12px", textDecoration: "none" }}>Privacy</a>
           </div>
         </div>
       </footer>
