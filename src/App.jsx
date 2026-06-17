@@ -10,7 +10,15 @@ export default function App() {
   // Modals state
   const [showLaunchModal, setShowLaunchModal] = useState(false);
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   
+  // Auth Form State
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
+  const [passInput, setPassInput] = useState("");
+  const [nameInput, setNameInput] = useState("");
+  const [user, setUser] = useState(null); // Auth User Session State
+
   // Launch Form State
   const [newName, setNewName] = useState("");
   const [newTagline, setNewTagline] = useState("");
@@ -24,6 +32,10 @@ export default function App() {
 
   useEffect(() => {
     setProjects(getProjects());
+    const savedUser = localStorage.getItem("dev_launchpad_user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
   }, []);
 
   const handleVote = (id, e) => {
@@ -50,8 +62,8 @@ export default function App() {
       tags: parsedTags,
       github: newGithub,
       website: newWebsite,
-      creator: "Ayush Yadav",
-      creatorGithub: "ayushhyadav0818"
+      creator: user ? user.name : "Ayush Yadav",
+      creatorGithub: user ? user.github : "ayushhyadav0818"
     });
 
     setProjects(updated);
@@ -69,10 +81,51 @@ export default function App() {
   const handleAddComment = (e) => {
     e.preventDefault();
     if (!commentText.trim() || !activeProject) return;
-    const updated = addComment(activeProject.id, commentText, "Innovator Guest");
+    const authorName = user ? user.name : "Innovator Guest";
+    const updated = addComment(activeProject.id, commentText, authorName);
     setProjects(updated);
     setActiveProject(updated.find(p => p.id === activeProject.id));
     setCommentText("");
+  };
+
+  // Auth Handling
+  const handleAuthSubmit = (e) => {
+    e.preventDefault();
+    if (!emailInput || !passInput) return;
+    const loggedUser = {
+      name: nameInput || emailInput.split("@")[0],
+      email: emailInput,
+      github: emailInput.split("@")[0] + "-dev",
+      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150"
+    };
+    localStorage.setItem("dev_launchpad_user", JSON.stringify(loggedUser));
+    setUser(loggedUser);
+    setShowAuthModal(false);
+    resetAuthFields();
+  };
+
+  const handleGmailLogin = () => {
+    // Simulated Gmail Login Auth Flow
+    const loggedUser = {
+      name: "Ayush Yadav (Google)",
+      email: "ayushyadav0818@gmail.com",
+      github: "ayushhyadav0818",
+      avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150"
+    };
+    localStorage.setItem("dev_launchpad_user", JSON.stringify(loggedUser));
+    setUser(loggedUser);
+    setShowAuthModal(false);
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem("dev_launchpad_user");
+    setUser(null);
+  };
+
+  const resetAuthFields = () => {
+    setEmailInput("");
+    setPassInput("");
+    setNameInput("");
   };
 
   // Get counts for sidebar tags
@@ -122,17 +175,30 @@ export default function App() {
                 className="cyber-input"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ paddingLeft: "36px", width: "240px", fontSize: "14px" }}
+                style={{ paddingLeft: "36px", width: "220px", fontSize: "14px" }}
               />
               <span style={{ position: "absolute", left: "12px", top: "10px", color: "#c7c4d7", fontSize: "14px" }}>🔍</span>
             </div>
-            <button 
-              className="btn-primary" 
-              onClick={() => setShowLaunchModal(true)}
-              style={{ padding: "8px 20px", fontSize: "13px" }}
-            >
-              Sign In
-            </button>
+
+            {user ? (
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <img src={user.avatar} alt={user.name} style={{ width: "32px", height: "32px", borderRadius: "50%", border: "1px solid #c0c1ff" }} />
+                <button 
+                  onClick={handleSignOut}
+                  style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "8px", padding: "6px 12px", color: "#c7c4d7", cursor: "pointer", fontSize: "12px" }}
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <button 
+                className="btn-primary" 
+                onClick={() => setShowAuthModal(true)}
+                style={{ padding: "8px 20px", fontSize: "13px" }}
+              >
+                Sign In
+              </button>
+            )}
           </div>
         </div>
       </nav>
@@ -230,6 +296,105 @@ export default function App() {
           </div>
         </main>
       </div>
+
+      {/* Auth Modal */}
+      {showAuthModal && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(14, 14, 15, 0.8)", backdropFilter: "blur(12px)",
+          display: "flex", justifyContent: "center", alignItems: "center", zIndex: 120
+        }} onClick={() => setShowAuthModal(false)}>
+          <div 
+            className="surface-level-1 surface-level-2" 
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: "420px", padding: "36px", borderRadius: "12px", display: "flex", flexDirection: "column", gap: "20px" }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ fontSize: "20px", fontWeight: "800", color: "#fff", margin: 0 }}>
+                {isSignUp ? "Create Account" : "Welcome Back"}
+              </h3>
+              <button onClick={() => setShowAuthModal(false)} style={{ background: "none", border: "none", color: "#c7c4d7", cursor: "pointer", fontSize: "18px" }}>✕</button>
+            </div>
+
+            {/* Google Gmail Sign In Button */}
+            <button 
+              onClick={handleGmailLogin}
+              style={{
+                width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.15)",
+                background: "rgba(255, 255, 255, 0.02)", color: "white", fontWeight: "600",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", cursor: "pointer", transition: "background 0.2s"
+              }}
+              onMouseOver={(e) => e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)"}
+              onMouseOut={(e) => e.currentTarget.style.background = "rgba(255, 255, 255, 0.02)"}
+            >
+              <svg style={{ width: "18px", height: "18px" }} viewBox="0 0 24 24">
+                <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.137 4.114-3.41 0-6.19-2.78-6.19-6.19s2.78-6.19 6.19-6.19c1.7 0 3.12.68 4.14 1.77L21.2 5.03C19.16 3.13 16.48 2 12.24 2c-5.52 0-10 4.48-10 10s4.48 10 10 10c5.18 0 9.76-3.75 9.76-9.715 0-.67-.06-1.3-.17-1.92H12.24z"/>
+              </svg>
+              Continue with Gmail
+            </button>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", color: "#64748b" }}>
+              <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.08)" }}></div>
+              <span style={{ fontSize: "12px" }}>or</span>
+              <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.08)" }}></div>
+            </div>
+
+            <form onSubmit={handleAuthSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              {isSignUp && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  <label style={{ fontSize: "12px", color: "#c7c4d7" }}>Full Name</label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. John Doe"
+                    required
+                    style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                    value={nameInput}
+                    onChange={(e) => setNameInput(e.target.value)}
+                  />
+                </div>
+              )}
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <label style={{ fontSize: "12px", color: "#c7c4d7" }}>Email Address</label>
+                <input 
+                  type="email" 
+                  placeholder="e.g. email@example.com"
+                  required
+                  style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                />
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <label style={{ fontSize: "12px", color: "#c7c4d7" }}>Password</label>
+                <input 
+                  type="password" 
+                  placeholder="••••••••"
+                  required
+                  style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                  value={passInput}
+                  onChange={(e) => setPassInput(e.target.value)}
+                />
+              </div>
+
+              <button type="submit" className="btn-primary" style={{ padding: "12px", fontSize: "14px", marginTop: "8px" }}>
+                {isSignUp ? "Sign Up" : "Sign In"}
+              </button>
+            </form>
+
+            <div style={{ textAlign: "center", fontSize: "13px", color: "#c7c4d7" }}>
+              {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+              <span 
+                onClick={() => { setIsSignUp(!isSignUp); resetAuthFields(); }}
+                style={{ color: "#c0c1ff", cursor: "pointer", fontWeight: "600" }}
+              >
+                {isSignUp ? "Sign In" : "Sign Up"}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Project Details Modal */}
       {activeProject && (
