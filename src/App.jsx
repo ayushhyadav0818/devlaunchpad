@@ -104,7 +104,6 @@ export default function App() {
     resetAuthFields();
   };
 
-  // Provider Auth Simulation
   const handleProviderLogin = (provider) => {
     let mockUser = {
       name: `Ayush (${provider})`,
@@ -151,11 +150,11 @@ export default function App() {
   });
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#08080c", color: "#e5e2e3" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#060609", color: "#e5e2e3" }}>
       {/* Top Navbar */}
       <nav style={{
         position: "sticky", top: 0, width: "100%", zIndex: 50,
-        background: "rgba(8, 8, 12, 0.7)", backdropFilter: "blur(20px)",
+        background: "rgba(6, 6, 9, 0.8)", backdropFilter: "blur(20px)",
         borderBottom: "1px solid rgba(255, 255, 255, 0.05)"
       }}>
         <div style={{
@@ -165,30 +164,15 @@ export default function App() {
           <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
             <a href="#" style={{ fontSize: "24px", fontWeight: "800", textDecoration: "none", color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
               <span style={{ width: "12px", height: "12px", borderRadius: "50%", background: "linear-gradient(135deg, #6366f1, #06B6D4)" }}></span>
-              Launchpad
+              DevLaunch
             </a>
-            <div style={{ display: "flex", gap: "24px" }}>
-              <a href="#" style={{ color: "#c0c1ff", fontWeight: "700", borderBottom: "2px solid #c0c1ff", paddingBottom: "4px", textDecoration: "none" }}>Explore</a>
-              <a href="#" onClick={() => setShowLaunchModal(true)} style={{ color: "#c7c4d7", textDecoration: "none" }}>Submit</a>
-            </div>
           </div>
           
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div style={{ position: "relative" }}>
-              <input 
-                type="text" 
-                placeholder="Search startups..."
-                className="cyber-input"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ paddingLeft: "36px", width: "240px", fontSize: "14px", border: "1px solid rgba(255, 255, 255, 0.08)" }}
-              />
-              <span style={{ position: "absolute", left: "12px", top: "10px", color: "#64748b", fontSize: "14px" }}>🔍</span>
-            </div>
-
             {user ? (
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                 <img src={user.avatar} alt={user.name} style={{ width: "34px", height: "34px", borderRadius: "50%", border: "2px solid #6366f1", objectFit: "cover" }} />
+                <span style={{ fontSize: "14px", color: "#c0c1ff", fontWeight: "600" }}>{user.name}</span>
                 <button 
                   onClick={handleSignOut}
                   style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "8px", padding: "6px 12px", color: "#c7c4d7", cursor: "pointer", fontSize: "12px" }}
@@ -202,107 +186,208 @@ export default function App() {
                 onClick={() => setShowAuthModal(true)}
                 style={{ padding: "10px 22px", fontSize: "13px" }}
               >
-                Sign In
+                Sign In / Join
               </button>
             )}
           </div>
         </div>
       </nav>
 
-      {/* Main Layout Body */}
-      <div style={{ flex: 1, display: "flex", width: "100%", maxWidth: "1280px", margin: "0 auto", overflow: "hidden" }}>
-        
-        {/* Sidebar Nav */}
-        <aside style={{ width: "260px", borderRight: "1px solid rgba(255, 255, 255, 0.05)", padding: "32px 24px", display: "flex", flexDirection: "column" }}>
-          <h2 style={{ fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "20px" }}>Browse Categories</h2>
-          <nav style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {availableTags.map(tag => (
-              <a 
-                href="#" 
-                key={tag}
-                onClick={() => setSelectedTag(tag)}
-                style={{
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
-                  padding: "10px 14px", borderRadius: "8px", textDecoration: "none",
-                  background: selectedTag === tag ? "rgba(99, 102, 241, 0.08)" : "transparent",
-                  border: selectedTag === tag ? "1px solid rgba(99,102,241,0.25)" : "1px solid transparent",
-                  color: selectedTag === tag ? "#c0c1ff" : "#c7c4d7",
-                  transition: "all 0.2s",
-                  fontWeight: selectedTag === tag ? "600" : "400"
-                }}
-              >
-                <span>{tag === "All" ? "All Projects" : tag}</span>
-                <span style={{ fontSize: "12px", background: "rgba(255,255,255,0.04)", padding: "2px 8px", borderRadius: "20px" }}>{getCategoryCount(tag)}</span>
-              </a>
-            ))}
-          </nav>
-        </aside>
-
-        {/* Feed Area */}
-        <main style={{ flex: 1, padding: "32px", minWidth: 0 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "40px" }}>
-            <div>
-              <h1 style={{ fontSize: "32px", fontWeight: "800", color: "#fff", margin: "0 0 6px 0", letterSpacing: "-0.02em" }}>Discovery Feed</h1>
-              <p style={{ color: "#c7c4d7", fontSize: "14px", margin: 0 }}>Discover the latest micro-SaaS tools built by indie hackers globally.</p>
+      {/* Conditional Rendering: Landing vs Workspace */}
+      {!user ? (
+        /* Dynamic Landing Page */
+        <div style={{ display: "flex", flexDirection: "column" }} className="animate-fade">
+          {/* Hero Header */}
+          <header style={{ position: "relative", paddingTop: "100px", paddingBottom: "100px", textAlign: "center", overflow: "hidden" }}>
+            <div className="grid-bg" style={{ position: "absolute", inset: 0, pointerEvents: "none" }}></div>
+            <div style={{
+              position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+              width: "500px", height: "500px", background: "rgba(99, 102, 241, 0.08)",
+              borderRadius: "50%", filter: "blur(90px)", pointerEvents: "none"
+            }}></div>
+            
+            <div style={{ relative: "z-10", maxWidth: "900px", margin: "0 auto", padding: "0 24px" }} className="animate-slide">
+              <span style={{
+                display: "inline-flex", padding: "6px 14px", borderRadius: "999px",
+                background: "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.25)",
+                color: "#c0c1ff", fontSize: "12px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "24px"
+              }}>
+                The Future of Micro-SaaS
+              </span>
+              <h1 className="glow-text" style={{ fontSize: "56px", fontWeight: "800", color: "#fff", marginBottom: "24px", lineHeight: "1.1", letterSpacing: "-0.04em" }}>
+                Validate & Launch Your <br />
+                <span style={{ background: "linear-gradient(135deg, #a5b4fc 0%, #6366f1 50%, #06B6D4 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Side-Projects Instantly</span>
+              </h1>
+              <p style={{ color: "#c7c4d7", fontSize: "19px", lineHeight: "1.6", maxWidth: "680px", margin: "0 auto 40px auto" }}>
+                DevLaunch provides a dedicated sandbox to showcase developer-first micro-SaaS startups. Connect, collect upvotes, and gather actionable feedback.
+              </p>
+              
+              <div style={{ display: "flex", gap: "16px", justifyContent: "center" }}>
+                <button className="btn-primary" onClick={() => setShowAuthModal(true)} style={{ padding: "16px 36px", fontSize: "16px" }}>
+                  Access Workspace Now 🚀
+                </button>
+              </div>
             </div>
-            <div style={{ display: "flex", background: "#111116", borderRadius: "8px", padding: "4px", border: "1px solid rgba(255,255,255,0.05)" }}>
-              <button className="btn-primary" style={{ padding: "6px 16px", borderRadius: "6px", fontSize: "12px", boxShadow: "none" }}>Newest</button>
-              <button style={{ padding: "6px 16px", background: "none", border: "none", color: "#c7c4d7", cursor: "pointer", fontSize: "12px" }}>Trending</button>
-            </div>
-          </div>
+          </header>
 
-          {/* Cards Grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "24px" }}>
-            {filteredProjects.map(proj => (
-              <article 
-                key={proj.id} 
-                className="glass-panel"
-                onClick={() => setActiveProject(proj)}
-                style={{ padding: "24px", borderRadius: "12px", display: "flex", flexDirection: "column", height: "250px", cursor: "pointer", justifyContent: "space-between" }}
-              >
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "42px", height: "42px", borderRadius: "10px", background: "linear-gradient(135deg, #6366f1, #06B6D4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
-                        🚀
+          {/* Core Features / Why DevLaunch */}
+          <section style={{ maxWidth: "1200px", margin: "0 auto", padding: "60px 24px", width: "100%" }}>
+            <h2 style={{ textAlign: "center", fontSize: "32px", fontWeight: "800", color: "#fff", marginBottom: "48px" }}>Why DevLaunch?</h2>
+            
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "32px" }}>
+              <div className="glass-panel" style={{ padding: "32px", borderRadius: "12px" }}>
+                <div style={{ fontSize: "36px", marginBottom: "16px" }}>🔥</div>
+                <h3 style={{ fontSize: "20px", fontWeight: "700", color: "#fff", marginBottom: "12px" }}>Instant Validation</h3>
+                <p style={{ color: "#c7c4d7", fontSize: "15px", lineHeight: "1.6" }}>
+                  Skip complex marketing setup. Pitch directly to a tech-savvy community of developers, builders, and early adopters.
+                </p>
+              </div>
+
+              <div className="glass-panel" style={{ padding: "32px", borderRadius: "12px" }}>
+                <div style={{ fontSize: "36px", marginBottom: "16px" }}>📈</div>
+                <h3 style={{ fontSize: "20px", fontWeight: "700", color: "#fff", marginBottom: "12px" }}>Luminescent Insights</h3>
+                <p style={{ color: "#c7c4d7", fontSize: "15px", lineHeight: "1.6" }}>
+                  Every project dashboard comes with built-in visitor traffic tracking and upvote-to-view conversion analytics.
+                </p>
+              </div>
+
+              <div className="glass-panel" style={{ padding: "32px", borderRadius: "12px" }}>
+                <div style={{ fontSize: "36px", marginBottom: "16px" }}>💬</div>
+                <h3 style={{ fontSize: "20px", fontWeight: "700", color: "#fff", marginBottom: "12px" }}>Interactive Discussions</h3>
+                <p style={{ color: "#c7c4d7", fontSize: "15px", lineHeight: "1.6" }}>
+                  Gather technical advice, feature requests, or collaboration proposals directly from peers through sandbox discussion board.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* How It Works */}
+          <section style={{ background: "rgba(255, 255, 255, 0.01)", borderTop: "1px solid rgba(255, 255, 255, 0.05)", borderBottom: "1px solid rgba(255, 255, 255, 0.05)", padding: "80px 24px" }}>
+            <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+              <h2 style={{ textAlign: "center", fontSize: "32px", fontWeight: "800", color: "#fff", marginBottom: "56px" }}>Three Simple Steps</h2>
+              
+              <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+                <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
+                  <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#6366f1", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800", flexShrink: 0 }}>1</div>
+                  <div>
+                    <h4 style={{ fontSize: "18px", fontWeight: "700", color: "#fff", margin: "0 0 8px 0" }}>Sign In or Join</h4>
+                    <p style={{ color: "#c7c4d7", fontSize: "15px", margin: 0 }}>Authenticate with Google, GitHub, Apple or your email to open the workspace environment.</p>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
+                  <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#06B6D4", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800", flexShrink: 0 }}>2</div>
+                  <div>
+                    <h4 style={{ fontSize: "18px", fontWeight: "700", color: "#fff", margin: "0 0 8px 0" }}>Deploy / List Your Project</h4>
+                    <p style={{ color: "#c7c4d7", fontSize: "15px", margin: 0 }}>Use the launch form to add your project description, source links, tags, and start collecting support views.</p>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
+                  <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#10b981", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "800", flexShrink: 0 }}>3</div>
+                  <div>
+                    <h4 style={{ fontSize: "18px", fontWeight: "700", color: "#fff", margin: "0 0 8px 0" }}>Track Dashboard Metrics</h4>
+                    <p style={{ color: "#c7c4d7", fontSize: "15px", margin: 0 }}>Monitor page views, daily upvotes charts, and review the feedback submitted by users.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      ) : (
+        /* Workspace Dashboard Screen - Visible post authentication */
+        <div style={{ flex: 1, display: "flex", width: "100%", maxWidth: "1280px", margin: "0 auto", overflow: "hidden" }} className="animate-fade">
+          {/* Sidebar Nav */}
+          <aside style={{ width: "240px", borderRight: "1px solid rgba(255, 255, 255, 0.05)", padding: "32px 24px", display: "flex", flexDirection: "column" }}>
+            <h2 style={{ fontSize: "12px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px" }}>Categories</h2>
+            <nav style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              {availableTags.map(tag => (
+                <a 
+                  href="#" 
+                  key={tag}
+                  onClick={() => setSelectedTag(tag)}
+                  style={{
+                    display: "flex", justifyContent: "space-between", alignItems: "center",
+                    padding: "8px 12px", borderRadius: "8px", textDecoration: "none",
+                    background: selectedTag === tag ? "rgba(99, 102, 241, 0.08)" : "transparent",
+                    border: selectedTag === tag ? "1px solid rgba(99,102,241,0.25)" : "1px solid transparent",
+                    color: selectedTag === tag ? "#c0c1ff" : "#c7c4d7",
+                    transition: "all 0.2s"
+                  }}
+                >
+                  <span>{tag === "All" ? "All Projects" : tag}</span>
+                  <span style={{ fontSize: "12px", opacity: 0.8 }}>{getCategoryCount(tag)}</span>
+                </a>
+              ))}
+            </nav>
+          </aside>
+
+          {/* Feed Area */}
+          <main style={{ flex: 1, padding: "32px", minWidth: 0 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "32px" }}>
+              <div>
+                <h1 style={{ fontSize: "28px", fontWeight: "800", color: "#fff", margin: "0 0 4px 0" }}>Discovery Feed</h1>
+                <p style={{ color: "#c7c4d7", fontSize: "14px", margin: 0 }}>Discover the latest Micro-SaaS tools built by indie hackers.</p>
+              </div>
+              <div style={{ display: "flex", background: "#111116", borderRadius: "8px", padding: "4px", border: "1px solid rgba(255,255,255,0.05)" }}>
+                <button className="btn-primary" style={{ padding: "6px 16px", borderRadius: "6px", fontSize: "12px", boxShadow: "none" }}>Newest</button>
+                <button style={{ padding: "6px 16px", background: "none", border: "none", color: "#c7c4d7", cursor: "pointer", fontSize: "12px" }}>Trending</button>
+              </div>
+            </div>
+
+            {/* Cards Grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "24px" }}>
+              {filteredProjects.map(proj => (
+                <article 
+                  key={proj.id} 
+                  className="glass-panel"
+                  onClick={() => setActiveProject(proj)}
+                  style={{ padding: "20px", borderRadius: "12px", display: "flex", flexDirection: "column", height: "240px", cursor: "pointer", justifyContent: "space-between" }}
+                >
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div style={{ width: "40px", height: "40px", borderRadius: "8px", background: "linear-gradient(135deg, #6366f1, #06B6D4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
+                          🚀
+                        </div>
+                        <div>
+                          <h3 style={{ margin: 0, fontSize: "17px", fontWeight: "700", color: "#fff" }}>{proj.name}</h3>
+                          <span className="tag-badge" style={{ marginTop: "4px", display: "inline-block" }}>
+                            {proj.tags[0]}
+                          </span>
+                        </div>
                       </div>
-                      <div>
-                        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "700", color: "#fff" }}>{proj.name}</h3>
-                        <span className="tag-badge" style={{ marginTop: "4px", display: "inline-block" }}>
-                          {proj.tags[0]}
-                        </span>
+
+                      {/* Upvote */}
+                      <div 
+                        onClick={(e) => handleVote(proj.id, e)}
+                        style={{
+                          display: "flex", flexDirection: "column", alignItems: "center",
+                          background: proj.hasVoted ? "rgba(99, 102, 241, 0.15)" : "rgba(255,255,255,0.02)",
+                          border: proj.hasVoted ? "1px solid #6366f1" : "1px solid rgba(255,255,255,0.08)",
+                          borderRadius: "8px", padding: "6px 10px", cursor: "pointer"
+                        }}
+                      >
+                        <span style={{ fontSize: "11px", color: "#c0c1ff" }}>▲</span>
+                        <span style={{ fontSize: "13px", fontWeight: "700", color: "#fff" }}>{proj.upvotes}</span>
                       </div>
                     </div>
 
-                    {/* Upvote */}
-                    <div 
-                      onClick={(e) => handleVote(proj.id, e)}
-                      style={{
-                        display: "flex", flexDirection: "column", alignItems: "center",
-                        background: proj.hasVoted ? "rgba(99, 102, 241, 0.15)" : "rgba(255,255,255,0.02)",
-                        border: proj.hasVoted ? "1px solid #6366f1" : "1px solid rgba(255,255,255,0.08)",
-                        borderRadius: "8px", padding: "6px 12px", cursor: "pointer", transition: "all 0.2s"
-                      }}
-                    >
-                      <span style={{ fontSize: "11px", color: "#c0c1ff" }}>▲</span>
-                      <span style={{ fontSize: "14px", fontWeight: "700", color: "#fff" }}>{proj.upvotes}</span>
-                    </div>
+                    <p style={{ color: "#c7c4d7", fontSize: "14px", marginTop: "16px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                      {proj.tagline}
+                    </p>
                   </div>
 
-                  <p style={{ color: "#c7c4d7", fontSize: "14px", marginTop: "18px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", lineHeight: "1.5" }}>
-                    {proj.tagline}
-                  </p>
-                </div>
-
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "14px" }}>
-                  <span style={{ fontSize: "12px", color: "#c7c4d7" }}>by @{proj.creatorGithub}</span>
-                  <span style={{ fontSize: "12px", color: "#06B6D4", fontWeight: "600", fontFamily: "JetBrains Mono" }}>$2.4k/mo</span>
-                </div>
-              </article>
-            ))}
-          </div>
-        </main>
-      </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "12px" }}>
+                    <span style={{ fontSize: "12px", color: "#c7c4d7" }}>by @{proj.creatorGithub}</span>
+                    <span style={{ fontSize: "12px", color: "#06B6D4", fontWeight: "600", fontFamily: "JetBrains Mono" }}>$2.4k/mo</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </main>
+        </div>
+      )}
 
       {/* Auth Modal */}
       {showAuthModal && (
@@ -318,14 +403,13 @@ export default function App() {
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <h3 style={{ fontSize: "22px", fontWeight: "800", color: "#fff", margin: 0 }}>
-                {isSignUp ? "Join the Launchpad" : "Welcome Back"}
+                {isSignUp ? "Create Account" : "Access Workspace"}
               </h3>
               <button onClick={() => setShowAuthModal(false)} style={{ background: "none", border: "none", color: "#c7c4d7", cursor: "pointer", fontSize: "20px" }}>✕</button>
             </div>
 
             {/* Provider Auth Options */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-              {/* Google */}
               <button 
                 onClick={() => handleProviderLogin("Google")}
                 style={{
@@ -336,7 +420,6 @@ export default function App() {
               >
                 🔴 Google
               </button>
-              {/* GitHub */}
               <button 
                 onClick={() => handleProviderLogin("GitHub")}
                 style={{
@@ -347,7 +430,6 @@ export default function App() {
               >
                 🐱 GitHub
               </button>
-              {/* Apple */}
               <button 
                 onClick={() => handleProviderLogin("Apple")}
                 style={{
@@ -358,7 +440,6 @@ export default function App() {
               >
                 🍏 Apple ID
               </button>
-              {/* Hotmail */}
               <button 
                 onClick={() => handleProviderLogin("Hotmail")}
                 style={{
@@ -417,7 +498,7 @@ export default function App() {
               </div>
 
               <button type="submit" className="btn-primary" style={{ padding: "12px", fontSize: "14px", marginTop: "8px" }}>
-                {isSignUp ? "Create Account" : "Access Launchpad"}
+                {isSignUp ? "Create Account" : "Access Workspace"}
               </button>
             </form>
 
@@ -712,7 +793,7 @@ export default function App() {
       {/* Footer */}
       <footer style={{
         marginTop: "auto", borderTop: "1px solid rgba(255,255,255,0.05)",
-        background: "#0a0a0f", padding: "24px"
+        background: "#060609", padding: "24px"
       }}>
         <div style={{
           display: "flex", justifyContent: "space-between", alignItems: "center",
