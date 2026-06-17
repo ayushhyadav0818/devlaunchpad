@@ -1,13 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Geist:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Outfit', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: dark;
   color: #e5e2e3;
-  background-color: #131314;
+  background-color: #08080c;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,7 +19,10 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #131314;
+  background-color: #08080c;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 40%);
   overflow-x: hidden;
 }
 
@@ -28,89 +31,98 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #131314;
+  background: #08080c;
 }
 ::-webkit-scrollbar-thumb {
-  background: #201f20;
+  background: #181824;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #353436;
+  background: #252538;
 }
 
-/* Surface Levels based on Stitch design specs */
-.surface-level-1 {
-  background-color: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
+/* Glass panel components */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.12);
+  transform: translateY(-2px);
+}
+
+.glass-modal {
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.surface-level-2 {
-  background-color: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.interactive-glow {
-  transition: all 0.3s ease;
-}
-
-.interactive-glow:hover {
-  border-color: #c0c1ff;
-  box-shadow: 0px 0px 12px rgba(192, 193, 255, 0.3);
 }
 
 /* Buttons */
 .btn-primary {
-  background: linear-gradient(to right, #6366F1, #06B6D4);
+  background: linear-gradient(135deg, #6366F1, #06B6D4);
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: filter 0.2s ease, transform 0.1s ease;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
 }
 .btn-primary:hover {
-  filter: brightness(1.2);
+  filter: brightness(1.15);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
 }
 .btn-primary:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
-.btn-glass {
-  background-color: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #c0c1ff;
+.btn-secondary-glow {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
+  color: #c0c1ff;
   cursor: pointer;
   font-weight: 600;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
-.btn-glass:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+.btn-secondary-glow:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: #c0c1ff;
 }
 
 .cyber-input {
-  background-color: #000000;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 9999px;
+  background-color: #030305;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
   color: #e5e2e3;
-  padding: 8px 16px;
+  padding: 10px 14px;
   outline: none;
   transition: all 0.2s ease;
 }
 .cyber-input:focus {
   border-color: #06B6D4;
-  box-shadow: 0px 0px 8px rgba(76, 215, 246, 0.3);
+  box-shadow: 0px 0px 8px rgba(76, 215, 246, 0.35);
 }
 
 .tag-badge {
-  background: rgba(192, 193, 255, 0.1);
-  color: #c0c1ff;
-  border: 1px solid rgba(192, 193, 255, 0.2);
-  padding: 2px 8px;
+  background: rgba(6, 182, 212, 0.08);
+  color: #22d3ee;
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  padding: 3px 8px;
   border-radius: 4px;
-  font-family: 'Geist', monospace;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
+}
+
+.grid-bg {
+  background-size: 40px 40px;
+  background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
 }

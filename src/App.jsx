@@ -17,7 +17,7 @@ export default function App() {
   const [emailInput, setEmailInput] = useState("");
   const [passInput, setPassInput] = useState("");
   const [nameInput, setNameInput] = useState("");
-  const [user, setUser] = useState(null); // Auth User Session State
+  const [user, setUser] = useState(null); // Active user session
 
   // Launch Form State
   const [newName, setNewName] = useState("");
@@ -104,16 +104,21 @@ export default function App() {
     resetAuthFields();
   };
 
-  const handleGmailLogin = () => {
-    // Simulated Gmail Login Auth Flow
-    const loggedUser = {
-      name: "Ayush Yadav (Google)",
-      email: "ayushyadav0818@gmail.com",
+  // Provider Auth Simulation
+  const handleProviderLogin = (provider) => {
+    let mockUser = {
+      name: `Ayush (${provider})`,
+      email: `ayush-${provider.toLowerCase()}@gmail.com`,
       github: "ayushhyadav0818",
       avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150"
     };
-    localStorage.setItem("dev_launchpad_user", JSON.stringify(loggedUser));
-    setUser(loggedUser);
+    if (provider === "GitHub") {
+      mockUser.avatar = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150";
+    } else if (provider === "Apple") {
+      mockUser.avatar = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150";
+    }
+    localStorage.setItem("dev_launchpad_user", JSON.stringify(mockUser));
+    setUser(mockUser);
     setShowAuthModal(false);
   };
 
@@ -146,19 +151,20 @@ export default function App() {
   });
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#131314", color: "#e5e2e3" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#08080c", color: "#e5e2e3" }}>
       {/* Top Navbar */}
       <nav style={{
         position: "sticky", top: 0, width: "100%", zIndex: 50,
-        background: "rgba(255, 255, 255, 0.03)", backdropFilter: "blur(16px)",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.08)"
+        background: "rgba(8, 8, 12, 0.7)", backdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.05)"
       }}>
         <div style={{
           display: "flex", justifyContent: "space-between", alignItems: "center",
-          height: "64px", padding: "0 24px", maxWidth: "1280px", margin: "0 auto"
+          height: "68px", padding: "0 24px", maxWidth: "1280px", margin: "0 auto"
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
-            <a href="#" style={{ fontSize: "22px", fontWeight: "800", textDecoration: "none", color: "#c0c1ff" }}>
+            <a href="#" style={{ fontSize: "24px", fontWeight: "800", textDecoration: "none", color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{ width: "12px", height: "12px", borderRadius: "50%", background: "linear-gradient(135deg, #6366f1, #06B6D4)" }}></span>
               Launchpad
             </a>
             <div style={{ display: "flex", gap: "24px" }}>
@@ -171,18 +177,18 @@ export default function App() {
             <div style={{ position: "relative" }}>
               <input 
                 type="text" 
-                placeholder="Search projects..."
+                placeholder="Search startups..."
                 className="cyber-input"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ paddingLeft: "36px", width: "220px", fontSize: "14px" }}
+                style={{ paddingLeft: "36px", width: "240px", fontSize: "14px", border: "1px solid rgba(255, 255, 255, 0.08)" }}
               />
-              <span style={{ position: "absolute", left: "12px", top: "10px", color: "#c7c4d7", fontSize: "14px" }}>🔍</span>
+              <span style={{ position: "absolute", left: "12px", top: "10px", color: "#64748b", fontSize: "14px" }}>🔍</span>
             </div>
 
             {user ? (
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <img src={user.avatar} alt={user.name} style={{ width: "32px", height: "32px", borderRadius: "50%", border: "1px solid #c0c1ff" }} />
+                <img src={user.avatar} alt={user.name} style={{ width: "34px", height: "34px", borderRadius: "50%", border: "2px solid #6366f1", objectFit: "cover" }} />
                 <button 
                   onClick={handleSignOut}
                   style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "8px", padding: "6px 12px", color: "#c7c4d7", cursor: "pointer", fontSize: "12px" }}
@@ -194,7 +200,7 @@ export default function App() {
               <button 
                 className="btn-primary" 
                 onClick={() => setShowAuthModal(true)}
-                style={{ padding: "8px 20px", fontSize: "13px" }}
+                style={{ padding: "10px 22px", fontSize: "13px" }}
               >
                 Sign In
               </button>
@@ -207,8 +213,8 @@ export default function App() {
       <div style={{ flex: 1, display: "flex", width: "100%", maxWidth: "1280px", margin: "0 auto", overflow: "hidden" }}>
         
         {/* Sidebar Nav */}
-        <aside style={{ width: "240px", borderRight: "1px solid rgba(255, 255, 255, 0.08)", padding: "24px", display: "flex", flexDirection: "column" }}>
-          <h2 style={{ fontSize: "12px", fontWeight: "600", color: "#c7c4d7", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "16px" }}>Categories</h2>
+        <aside style={{ width: "260px", borderRight: "1px solid rgba(255, 255, 255, 0.05)", padding: "32px 24px", display: "flex", flexDirection: "column" }}>
+          <h2 style={{ fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "20px" }}>Browse Categories</h2>
           <nav style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {availableTags.map(tag => (
               <a 
@@ -217,51 +223,52 @@ export default function App() {
                 onClick={() => setSelectedTag(tag)}
                 style={{
                   display: "flex", justifyContent: "space-between", alignItems: "center",
-                  padding: "8px 12px", borderRadius: "8px", textDecoration: "none",
-                  background: selectedTag === tag ? "rgba(255,255,255,0.05)" : "transparent",
-                  border: selectedTag === tag ? "1px solid rgba(192,193,255,0.3)" : "1px solid transparent",
+                  padding: "10px 14px", borderRadius: "8px", textDecoration: "none",
+                  background: selectedTag === tag ? "rgba(99, 102, 241, 0.08)" : "transparent",
+                  border: selectedTag === tag ? "1px solid rgba(99,102,241,0.25)" : "1px solid transparent",
                   color: selectedTag === tag ? "#c0c1ff" : "#c7c4d7",
-                  transition: "all 0.2s"
+                  transition: "all 0.2s",
+                  fontWeight: selectedTag === tag ? "600" : "400"
                 }}
               >
                 <span>{tag === "All" ? "All Projects" : tag}</span>
-                <span style={{ fontSize: "12px", opacity: 0.8 }}>{getCategoryCount(tag)}</span>
+                <span style={{ fontSize: "12px", background: "rgba(255,255,255,0.04)", padding: "2px 8px", borderRadius: "20px" }}>{getCategoryCount(tag)}</span>
               </a>
             ))}
           </nav>
         </aside>
 
         {/* Feed Area */}
-        <main style={{ flex: 1, padding: "24px", minWidth: 0 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "32px" }}>
+        <main style={{ flex: 1, padding: "32px", minWidth: 0 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "40px" }}>
             <div>
-              <h1 style={{ fontSize: "28px", fontWeight: "800", color: "#fff", margin: "0 0 4px 0" }}>Discovery Feed</h1>
-              <p style={{ color: "#c7c4d7", fontSize: "14px", margin: 0 }}>Discover the latest Micro-SaaS tools built by indie hackers.</p>
+              <h1 style={{ fontSize: "32px", fontWeight: "800", color: "#fff", margin: "0 0 6px 0", letterSpacing: "-0.02em" }}>Discovery Feed</h1>
+              <p style={{ color: "#c7c4d7", fontSize: "14px", margin: 0 }}>Discover the latest micro-SaaS tools built by indie hackers globally.</p>
             </div>
-            <div style={{ display: "flex", background: "#201f20", borderRadius: "8px", padding: "4px", border: "1px solid rgba(255,255,255,0.05)" }}>
-              <button className="btn-primary" style={{ padding: "6px 16px", borderRadius: "6px", fontSize: "12px" }}>Newest</button>
+            <div style={{ display: "flex", background: "#111116", borderRadius: "8px", padding: "4px", border: "1px solid rgba(255,255,255,0.05)" }}>
+              <button className="btn-primary" style={{ padding: "6px 16px", borderRadius: "6px", fontSize: "12px", boxShadow: "none" }}>Newest</button>
               <button style={{ padding: "6px 16px", background: "none", border: "none", color: "#c7c4d7", cursor: "pointer", fontSize: "12px" }}>Trending</button>
             </div>
           </div>
 
           {/* Cards Grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "24px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "24px" }}>
             {filteredProjects.map(proj => (
               <article 
                 key={proj.id} 
-                className="surface-level-1 interactive-glow"
+                className="glass-panel"
                 onClick={() => setActiveProject(proj)}
-                style={{ padding: "20px", borderRadius: "12px", display: "flex", flexDirection: "column", height: "240px", cursor: "pointer", justifyContent: "space-between" }}
+                style={{ padding: "24px", borderRadius: "12px", display: "flex", flexDirection: "column", height: "250px", cursor: "pointer", justifyContent: "space-between" }}
               >
                 <div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <div style={{ display: "flex", itemsCenter: "center", gap: "12px" }}>
-                      <div style={{ width: "40px", height: "40px", borderRadius: "8px", background: "linear-gradient(135deg, #6366f1, #06B6D4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <div style={{ width: "42px", height: "42px", borderRadius: "10px", background: "linear-gradient(135deg, #6366f1, #06B6D4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
                         🚀
                       </div>
                       <div>
-                        <h3 style={{ margin: 0, fontSize: "17px", fontWeight: "700", color: "#fff" }}>{proj.name}</h3>
-                        <span style={{ fontSize: "10px", background: "rgba(6,182,212,0.15)", color: "#06B6D4", padding: "2px 6px", borderRadius: "4px" }}>
+                        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "700", color: "#fff" }}>{proj.name}</h3>
+                        <span className="tag-badge" style={{ marginTop: "4px", display: "inline-block" }}>
                           {proj.tags[0]}
                         </span>
                       </div>
@@ -272,24 +279,24 @@ export default function App() {
                       onClick={(e) => handleVote(proj.id, e)}
                       style={{
                         display: "flex", flexDirection: "column", alignItems: "center",
-                        background: proj.hasVoted ? "rgba(192, 193, 255, 0.15)" : "#201f20",
-                        border: proj.hasVoted ? "1px solid #c0c1ff" : "1px solid rgba(255,255,255,0.08)",
-                        borderRadius: "8px", padding: "6px 10px", cursor: "pointer"
+                        background: proj.hasVoted ? "rgba(99, 102, 241, 0.15)" : "rgba(255,255,255,0.02)",
+                        border: proj.hasVoted ? "1px solid #6366f1" : "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: "8px", padding: "6px 12px", cursor: "pointer", transition: "all 0.2s"
                       }}
                     >
                       <span style={{ fontSize: "11px", color: "#c0c1ff" }}>▲</span>
-                      <span style={{ fontSize: "13px", fontWeight: "700", color: "#fff" }}>{proj.upvotes}</span>
+                      <span style={{ fontSize: "14px", fontWeight: "700", color: "#fff" }}>{proj.upvotes}</span>
                     </div>
                   </div>
 
-                  <p style={{ color: "#c7c4d7", fontSize: "14px", marginTop: "16px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                  <p style={{ color: "#c7c4d7", fontSize: "14px", marginTop: "18px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", lineHeight: "1.5" }}>
                     {proj.tagline}
                   </p>
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "12px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "14px" }}>
                   <span style={{ fontSize: "12px", color: "#c7c4d7" }}>by @{proj.creatorGithub}</span>
-                  <span style={{ fontSize: "12px", color: "#06B6D4", fontWeight: "600" }}>$2.4k/mo</span>
+                  <span style={{ fontSize: "12px", color: "#06B6D4", fontWeight: "600", fontFamily: "JetBrains Mono" }}>$2.4k/mo</span>
                 </div>
               </article>
             ))}
@@ -301,41 +308,72 @@ export default function App() {
       {showAuthModal && (
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-          background: "rgba(14, 14, 15, 0.8)", backdropFilter: "blur(12px)",
+          background: "rgba(5, 5, 8, 0.85)", backdropFilter: "blur(16px)",
           display: "flex", justifyContent: "center", alignItems: "center", zIndex: 120
         }} onClick={() => setShowAuthModal(false)}>
           <div 
-            className="surface-level-1 surface-level-2" 
+            className="glass-modal" 
             onClick={(e) => e.stopPropagation()}
-            style={{ width: "420px", padding: "36px", borderRadius: "12px", display: "flex", flexDirection: "column", gap: "20px" }}
+            style={{ width: "450px", padding: "36px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "20px" }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ fontSize: "20px", fontWeight: "800", color: "#fff", margin: 0 }}>
-                {isSignUp ? "Create Account" : "Welcome Back"}
+              <h3 style={{ fontSize: "22px", fontWeight: "800", color: "#fff", margin: 0 }}>
+                {isSignUp ? "Join the Launchpad" : "Welcome Back"}
               </h3>
-              <button onClick={() => setShowAuthModal(false)} style={{ background: "none", border: "none", color: "#c7c4d7", cursor: "pointer", fontSize: "18px" }}>✕</button>
+              <button onClick={() => setShowAuthModal(false)} style={{ background: "none", border: "none", color: "#c7c4d7", cursor: "pointer", fontSize: "20px" }}>✕</button>
             </div>
 
-            {/* Google Gmail Sign In Button */}
-            <button 
-              onClick={handleGmailLogin}
-              style={{
-                width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.15)",
-                background: "rgba(255, 255, 255, 0.02)", color: "white", fontWeight: "600",
-                display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", cursor: "pointer", transition: "background 0.2s"
-              }}
-              onMouseOver={(e) => e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)"}
-              onMouseOut={(e) => e.currentTarget.style.background = "rgba(255, 255, 255, 0.02)"}
-            >
-              <svg style={{ width: "18px", height: "18px" }} viewBox="0 0 24 24">
-                <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.137 4.114-3.41 0-6.19-2.78-6.19-6.19s2.78-6.19 6.19-6.19c1.7 0 3.12.68 4.14 1.77L21.2 5.03C19.16 3.13 16.48 2 12.24 2c-5.52 0-10 4.48-10 10s4.48 10 10 10c5.18 0 9.76-3.75 9.76-9.715 0-.67-.06-1.3-.17-1.92H12.24z"/>
-              </svg>
-              Continue with Gmail
-            </button>
+            {/* Provider Auth Options */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+              {/* Google */}
+              <button 
+                onClick={() => handleProviderLogin("Google")}
+                style={{
+                  padding: "10px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.08)",
+                  background: "rgba(255, 255, 255, 0.02)", color: "white", fontWeight: "600",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", cursor: "pointer", fontSize: "13px"
+                }}
+              >
+                🔴 Google
+              </button>
+              {/* GitHub */}
+              <button 
+                onClick={() => handleProviderLogin("GitHub")}
+                style={{
+                  padding: "10px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.08)",
+                  background: "rgba(255, 255, 255, 0.02)", color: "white", fontWeight: "600",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", cursor: "pointer", fontSize: "13px"
+                }}
+              >
+                🐱 GitHub
+              </button>
+              {/* Apple */}
+              <button 
+                onClick={() => handleProviderLogin("Apple")}
+                style={{
+                  padding: "10px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.08)",
+                  background: "rgba(255, 255, 255, 0.02)", color: "white", fontWeight: "600",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", cursor: "pointer", fontSize: "13px"
+                }}
+              >
+                🍏 Apple ID
+              </button>
+              {/* Hotmail */}
+              <button 
+                onClick={() => handleProviderLogin("Hotmail")}
+                style={{
+                  padding: "10px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.08)",
+                  background: "rgba(255, 255, 255, 0.02)", color: "white", fontWeight: "600",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", cursor: "pointer", fontSize: "13px"
+                }}
+              >
+                📧 Hotmail
+              </button>
+            </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "10px", color: "#64748b" }}>
               <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.08)" }}></div>
-              <span style={{ fontSize: "12px" }}>or</span>
+              <span style={{ fontSize: "11px" }}>OR CONTINUE WITH EMAIL</span>
               <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.08)" }}></div>
             </div>
 
@@ -347,7 +385,7 @@ export default function App() {
                     type="text" 
                     placeholder="e.g. John Doe"
                     required
-                    style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                    className="cyber-input"
                     value={nameInput}
                     onChange={(e) => setNameInput(e.target.value)}
                   />
@@ -360,7 +398,7 @@ export default function App() {
                   type="email" 
                   placeholder="e.g. email@example.com"
                   required
-                  style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                  className="cyber-input"
                   value={emailInput}
                   onChange={(e) => setEmailInput(e.target.value)}
                 />
@@ -372,14 +410,14 @@ export default function App() {
                   type="password" 
                   placeholder="••••••••"
                   required
-                  style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                  className="cyber-input"
                   value={passInput}
                   onChange={(e) => setPassInput(e.target.value)}
                 />
               </div>
 
               <button type="submit" className="btn-primary" style={{ padding: "12px", fontSize: "14px", marginTop: "8px" }}>
-                {isSignUp ? "Sign Up" : "Sign In"}
+                {isSignUp ? "Create Account" : "Access Launchpad"}
               </button>
             </form>
 
@@ -400,15 +438,15 @@ export default function App() {
       {activeProject && (
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-          background: "rgba(14, 14, 15, 0.8)", backdropFilter: "blur(12px)",
+          background: "rgba(5, 5, 8, 0.8)", backdropFilter: "blur(16px)",
           display: "flex", justifyContent: "center", alignItems: "center", zIndex: 100
         }} onClick={() => setActiveProject(null)}>
           <div 
-            className="surface-level-1 surface-level-2" 
+            className="glass-modal" 
             onClick={(e) => e.stopPropagation()}
             style={{
               width: "650px", maxHeight: "90vh", overflowY: "auto",
-              padding: "40px", position: "relative", borderRadius: "12px"
+              padding: "40px", position: "relative", borderRadius: "16px"
             }}
           >
             {/* Close */}
@@ -427,8 +465,8 @@ export default function App() {
               <button 
                 onClick={(e) => handleVote(activeProject.id, e)}
                 style={{
-                  background: activeProject.hasVoted ? "rgba(192, 193, 255, 0.2)" : "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(192, 193, 255, 0.3)",
+                  background: activeProject.hasVoted ? "rgba(99, 102, 241, 0.15)" : "rgba(255,255,255,0.02)",
+                  border: `1px solid ${activeProject.hasVoted ? "#6366f1" : "rgba(255,255,255,0.08)"}`,
                   color: "#c0c1ff", borderRadius: "8px", padding: "10px 18px",
                   cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", fontWeight: "700"
                 }}
@@ -445,7 +483,7 @@ export default function App() {
             {/* Links and Actions */}
             <div style={{ display: "flex", gap: "12px", marginBottom: "36px" }}>
               <a href={activeProject.github} target="_blank" rel="noreferrer" style={{ textDecoration: "none", flex: 1 }}>
-                <button style={{ width: "100%", padding: "12px", borderRadius: "8px", background: "#1c1b1c", border: "1px solid rgba(255,255,255,0.08)", color: "white", cursor: "pointer", fontWeight: "600" }}>
+                <button style={{ width: "100%", padding: "12px", borderRadius: "8px", background: "#161622", border: "1px solid rgba(255,255,255,0.08)", color: "white", cursor: "pointer", fontWeight: "600" }}>
                   💻 GitHub Source
                 </button>
               </a>
@@ -458,7 +496,7 @@ export default function App() {
               )}
               <button 
                 onClick={() => setShowAnalyticsModal(true)}
-                style={{ padding: "12px 16px", borderRadius: "8px", background: "rgba(76, 215, 246, 0.1)", border: "1px solid rgba(76, 215, 246, 0.3)", color: "#4cd7f6", cursor: "pointer", fontWeight: "600" }}
+                style={{ padding: "12px 16px", borderRadius: "8px", background: "rgba(6, 182, 212, 0.1)", border: "1px solid rgba(6, 182, 212, 0.25)", color: "#22d3ee", cursor: "pointer", fontWeight: "600" }}
               >
                 📊 Insights Stats
               </button>
@@ -472,10 +510,8 @@ export default function App() {
                 <input 
                   type="text" 
                   placeholder="Ask a question or leave feedback..."
-                  style={{
-                    flex: 1, background: "#000", border: "1px solid rgba(255, 255, 255, 0.08)",
-                    borderRadius: "8px", color: "white", padding: "10px 14px", outline: "none"
-                  }}
+                  className="cyber-input"
+                  style={{ flex: 1 }}
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
                 />
@@ -501,13 +537,13 @@ export default function App() {
       {showAnalyticsModal && activeProject && (
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-          background: "rgba(14, 14, 15, 0.85)", backdropFilter: "blur(12px)",
+          background: "rgba(5, 5, 8, 0.85)", backdropFilter: "blur(16px)",
           display: "flex", justifyContent: "center", alignItems: "center", zIndex: 110
         }} onClick={() => setShowAnalyticsModal(false)}>
           <div 
-            className="surface-level-1 surface-level-2" 
+            className="glass-modal" 
             onClick={(e) => e.stopPropagation()}
-            style={{ width: "500px", padding: "30px", borderRadius: "12px", position: "relative" }}
+            style={{ width: "500px", padding: "30px", borderRadius: "16px", position: "relative" }}
           >
             <button 
               onClick={() => setShowAnalyticsModal(false)}
@@ -572,17 +608,17 @@ export default function App() {
       {showLaunchModal && (
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-          background: "rgba(14, 14, 15, 0.8)", backdropFilter: "blur(12px)",
+          background: "rgba(5, 5, 8, 0.8)", backdropFilter: "blur(12px)",
           display: "flex", justifyContent: "center", alignItems: "center", zIndex: 100
         }} onClick={() => setShowLaunchModal(false)}>
           <form 
             onSubmit={handleLaunch}
-            className="surface-level-1 surface-level-2" 
+            className="glass-modal" 
             onClick={(e) => e.stopPropagation()}
             style={{
               width: "550px", maxHeight: "90vh", overflowY: "auto",
               padding: "40px", position: "relative",
-              display: "flex", flexDirection: "column", gap: "16px", borderRadius: "12px"
+              display: "flex", flexDirection: "column", gap: "16px", borderRadius: "16px"
             }}
           >
             <button 
@@ -601,7 +637,7 @@ export default function App() {
                 type="text" 
                 placeholder="e.g. CodeForge"
                 required
-                style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                className="cyber-input"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
               />
@@ -613,7 +649,7 @@ export default function App() {
                 type="text" 
                 placeholder="e.g. Build API integrations in under 5 minutes"
                 required
-                style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                className="cyber-input"
                 value={newTagline}
                 onChange={(e) => setNewTagline(e.target.value)}
               />
@@ -625,7 +661,8 @@ export default function App() {
                 placeholder="What problem does it solve? Who is it for?"
                 required
                 rows={4}
-                style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px", resize: "none", fontFamily: "inherit" }}
+                style={{ resize: "none", fontFamily: "inherit" }}
+                className="cyber-input"
                 value={newDesc}
                 onChange={(e) => setNewDesc(e.target.value)}
               />
@@ -636,7 +673,7 @@ export default function App() {
               <input 
                 type="text" 
                 placeholder="e.g. AI, SaaS, Developer Tools"
-                style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                className="cyber-input"
                 value={newTagsString}
                 onChange={(e) => setNewTagsString(e.target.value)}
               />
@@ -648,7 +685,7 @@ export default function App() {
                 <input 
                   type="url" 
                   placeholder="https://github.com/..."
-                  style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                  className="cyber-input"
                   value={newGithub}
                   onChange={(e) => setNewGithub(e.target.value)}
                 />
@@ -658,7 +695,7 @@ export default function App() {
                 <input 
                   type="url" 
                   placeholder="https://..."
-                  style={{ background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", padding: "10px" }}
+                  className="cyber-input"
                   value={newWebsite}
                   onChange={(e) => setNewWebsite(e.target.value)}
                 />
@@ -674,8 +711,8 @@ export default function App() {
 
       {/* Footer */}
       <footer style={{
-        marginTop: "auto", borderTop: "1px solid rgba(255,255,255,0.08)",
-        background: "#0E0E0F", padding: "24px"
+        marginTop: "auto", borderTop: "1px solid rgba(255,255,255,0.05)",
+        background: "#0a0a0f", padding: "24px"
       }}>
         <div style={{
           display: "flex", justifyContent: "space-between", alignItems: "center",
